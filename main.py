@@ -23,6 +23,8 @@ Pythonは3.8.2を使っている。3系なら今回紹介するコードは動�
 python3.8 main.py (Snake2より)
 エラー対応③IndentationError: unexpected indent（td_list =)
 後のmain()までのインデントを見越して点検。結果returnが前で効いて分断していた。
+エラー対応④SyntaxError: EOF while scanning triple-quoted string literal
+コメントの閉じが重複していて、main()の )に ^ の警告が。∴エラー時は広く前後を見るべし。あとスペル。
 """
 
 import requests
@@ -81,12 +83,71 @@ def main():
     先ほどのtd_valueの値をfor文で一つ一つ取得していく。
     ファイルの書き込みはf.でwrite()という関数を使う。\nは改行コード
     """
-    with open("words.txt", "w") as f:
-        for value in td_values:
-            f.write(value + "\n")
+    # with open("words.txt", "w") as f:
+    #     for value in td_values:
+    #         f.write(value + "\n")
 
     # words.txtというファイルが作成され全て一行ずつ書き込みOK
-    # これだけだと単語帳作る時に不便が多いのでもう少し加工していく。
+    # これだけだと単語帳作る時に不便が多いのでもう少し加工していく。一旦コメントアウト 。
+
+    """
+    リストの中をさらに分けることにする。
+    まずは空のリストを宣言する。
+    Webページの単語リストにも一行４つの情報が収納されていたので
+    ４つずつリストを別のリストに入れることにする。
+    これはrange関数を使っていけばできる。
+    初めのインデックス、終わりのインデックス、そして何個づつリストを飛ばして読むか
+    というのを指定すれば実現することができる。ここでは４を指定する。
+    """
+    splited_list = []
+
+    for index in range(0, len(td_values), 4):
+        # print(index)
+        # print(td_values[index])
+        a = td_values[index: index + 4]
+
+        if a[0] == '\u3000':
+            continue
+        splited_list.append(a)
+        # print(td_values[index: index + 4])
+
+    print(splited_list)
+
+    """
+    実行してみるとインデックスのナンバーと行の番号が表示された。
+    これ２つ同時に表示すると訳がわからなくなるのでもう少し修正。
+    いったんコメントアウトして行番号だけ表示するようにする。
+    (webページの一番左の行番号を表示)
+    ４つずつ塊を出すので
+    index:index+4を指定する。これはリストのスライス(別途)を使っている。
+    実行結果を見ると一行一行リストに入っている。
+    途中、表のヘッダーも入っているのでこれは除外と。
+    ちょうど行番号の所に空欄の文字コード('\u3000')が入っているので
+    これを指定して除外する。
+    いったんリストを変数に入れる。変数aとする。
+    そしてリストに追加するためにappendをする。
+    ヘッダーは除外したいので0番目の要素に文字コードを指定。
+    除外するのでcontinueを指定。
+    continueを指定することでfor文のループを次にまわすことができる。
+    実行するとリストの中にさらにリストが入っている。
+    """
+    """
+    次に先ほど作ったリストを基に書き込みをしていく。
+    欲しいのは英単語とその日本語和訳だけなので
+    1番目の要素と2番目の要素だけを書き込む。
+    最初に1番目の要素、次に2番目の要素を書き込んでみる。
+    こうすることで先に英単語、次に日本語訳が表示。
+        a 4th grader
+        4年生
+        a few
+        少しの
+    """
+
+    with open("words.txt", "w") as f:
+        for value in splited_list:
+            f.write(value[1] + "\n")
+            f.write(value[2] + "\n")
+
 
 if __name__ == "__main__":
     main()
