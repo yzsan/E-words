@@ -30,6 +30,7 @@ python3.8 main.py (Snake2より)
 import requests
 from bs4 import BeautifulSoup
 import time
+import random
 """
 次にmain関数を宣言する。
 main関数に処理の内容を書いて行く。
@@ -77,7 +78,7 @@ def save_problems():
     # 次にtdタグの中身を取ってくる。
     # .textを使えばtdタグの中身を取ることができる。リストの内包記法を使う。for文を簡単に書くことができる。
     td_values = [x.text for x in td_list]
-    print(td_values)
+    # print(td_values)
 
     """
     次にこれらの情報をファイルに書き込んでいく。
@@ -116,7 +117,7 @@ def save_problems():
         splited_list.append(a)
         # print(td_values[index: index + 4])
 
-    print(splited_list)
+    # print(splited_list)
 
     """
     実行してみるとインデックスのナンバーと行の番号が表示された。
@@ -199,38 +200,104 @@ def save_problems():
         a few
         少しの
     """
-
-def main():
+    
+    """
+    ＊＊＊＊＊＊　ここからmain_random.py　＊＊＊＊＊＊
+    まず問題を取得する関数を書く。def get_problems()
+    これをファイル読み込みしてリストに突っ込むとこまでを関数に書く。
+    （def mainの実行文をカットしてペースト with〜）
+    問題のリストを返す。return problems
+    """
+def get_problems():
+    """
+    ファイルから問題と回答のリストを返す
+    return 問題と回答のリスト
+    """
     with open("words.txt", "r") as f:
         problems = f.readlines()
         # print(problems)
         problems = [x.strip() for x in problems]
+
+    return problems
+
+    """
+    ＊＊＊＊＊＊　続き　＊＊＊＊＊＊
+    次にリストを受け取って、問題を表示する部分の関数も書いていく。
+    main関数の中身をごっそり移動させる。
+    引数は問題のリストにする。
+    大まかな関数の内容をコメントで書いておく。
+    プログラム書いた本人も時間が経つと内容は忘れてしまう。
+    なのでコメントを書くことは重要。
+    def start_english_words_test とともに def get_problemsにも。
+    関数に分けて書いて実行できるか確かめてみる。
+    問題なく実行できた。
+    次にランダムで出すためにimport randomしておく。
+    受けとったリストをランダムでシャッフルする。
+    random.shuffleを使えばできる。
+    リストを渡せばリストの中身をシャッフルしてくれる。
+    これで問題をランダムで出題することができる。
+    実際に確認。
+    main_random.pyを実行すること忘れずに！
+    これで短時間で多くの単語を復習したり覚えたりすることができる。
+    このようにスクレイピングによってデータを用意し、そんデータを加工しそれを表示することで単語テストを作ることができた。
+    今回は英単語のデータを使ってアプリケーションを作った。
+    Pythonの基本的な文法にて。　
+    """
+def start_english_words_test(problems):
+    """
+    単語テストを開始する
+    英単語と日本語訳を表示
+    """
+    for index, p in enumerate(problems):
+        # print(p)
+        x = p.split(",")
+        # print(x)
+        # break
+
+        english = x[0]
+        japanese = x[1]
+        print("====第{}問目===".format(index + 1))
+
+        print(english)
+        time.sleep(1)
+        print(japanese)
+        time.sleep(0.5)
+        # break
+
+
+
+
+def main():
+    p = get_problems()
+    random.shuffle(p)
+    start_english_words_test(problems=p)
+
         # print(problems[0:10])
         
-        for index, p in enumerate(problems):
-            # print(p)
-            x = p.split(",")
-            # print(x)
-            # break
+        # for index, p in enumerate(problems):
+        #     # print(p)
+        #     x = p.split(",")
+        #     # print(x)
+        #     # break
 
-            english = x[0]
-            japanese = x[1]
-            print("====第{}問目===".format(index + 1))
+        #     english = x[0]
+        #     japanese = x[1]
+        #     print("====第{}問目===".format(index + 1))
 
-            print(english)
-            time.sleep(1)
-            print(japanese)
-            time.sleep(0.5)
-            # break
+        #     print(english)
+        #     time.sleep(1)
+        #     print(japanese)
+        #     time.sleep(0.5)
+        #     # break
 
-            """
-            以下strip関数であれば問題なし。
-            （一見改行コードがなくなってつように見えるけどこれは間違い。
-            （split関数に引数が指定されていない場合、空白毎に要素を挙げてしまう。
-            （カンマで分かれているので、それをスピリット関数で分けていく。
-            （split関数の引数にカンマを指定する。
-            （要素一つだけ見たいのでbreakでfor文を止める。
-            """
+    """
+    以下strip関数であれば問題なし。
+    （一見改行コードがなくなってつように見えるけどこれは間違い。
+    （split関数に引数が指定されていない場合、空白毎に要素を挙げてしまう。
+    （カンマで分かれているので、それをスピリット関数で分けていく。
+    （split関数の引数にカンマを指定する。
+    （要素一つだけ見たいのでbreakでfor文を止める。
+    """
             # for p in problems:
             #     print(p)
             #     x = p[0].split(",")
@@ -257,7 +324,7 @@ def main():
     少し難しくするために間隔の秒数を短くする。1と0に
     これで素早く表示させることができる。
     """
-    
+
 
 if __name__ == "__main__":
     main()
